@@ -1,8 +1,14 @@
-import {ChangeEvent} from 'react'
-import {FilterValueType} from '../App'
-import {Button} from './Button'
+import {ChangeEvent} from 'react';
+import {FilterValueType} from '../App';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Box from '@mui/material/Box';
 
 export type TaskType = {
     id: string
@@ -20,7 +26,7 @@ type TodolistType = {
     updateTask: (preload: { taskId: string, title: string, todoListId: string }) => void
     changeFilter: (preload: { filter: FilterValueType; todoListId: string }) => void
     deleteTodoList: (id: string) => void
-    updateTodoListTitle: (preload: {todoListId: string, title: string}) => void
+    updateTodoListTitle: (preload: { todoListId: string, title: string }) => void
     filter: FilterValueType
 }
 
@@ -35,7 +41,7 @@ export function Todolist(props: TodolistType) {
 
     const tasksList = props.tasks.length === 0
         ? <p>Tasks list is empty</p>
-        : <ul>
+        : <List>
             {props.tasks.map(task => {
                 const deleteTaskHandler = () => props.deleteTask({id: task.id, todoListId: props.todoListId});
                 const taskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => props.setTaskNewStatus({
@@ -47,14 +53,22 @@ export function Todolist(props: TodolistType) {
                     props.updateTask({taskId: task.id, todoListId: props.todoListId, title})
                 }
                 return (
-                    <li key={task.id} className={task.isDone ? 'done-task' : ''}>
-                        <input type="checkbox" checked={task.isDone} onChange={taskStatusHandler}/>
-                        <EditableSpan value={task.title} updateTitle={updateTaskCallback}/>
-                        <Button title="x" onClick={deleteTaskHandler}/>
-                    </li>
+                    <ListItem
+                        key={task.id}
+                        sx={{justifyContent: 'space-between', opacity: task.isDone ? 0.5 : 1}}
+                        disablePadding
+                        disableGutters>
+                        <div>
+                            <Checkbox checked={task.isDone} onChange={taskStatusHandler} size={'small'}/>
+                            <EditableSpan value={task.title} updateTitle={updateTaskCallback}/>
+                        </div>
+                        <IconButton onClick={deleteTaskHandler} size={'small'}>
+                            <DeleteIcon fontSize={'inherit'}/>
+                        </IconButton>
+                    </ListItem>
                 )
             })}
-        </ul>
+        </List>
 
     return (
         <div className="todolist">
@@ -62,23 +76,26 @@ export function Todolist(props: TodolistType) {
                 <h2>
                     <EditableSpan value={props.title} updateTitle={updateTitle}/>
                 </h2>
-                <Button title="x" onClick={deleteTodoListHandler}/>
+                <IconButton onClick={deleteTodoListHandler} size={'small'}>
+                    <DeleteIcon/>
+                </IconButton>
             </div>
             <AddItemForm addItem={addTaskCallback}/>
             {tasksList}
-
-            <Button
-                title="All"
-                className={props.filter === 'all' ? 'active-btn' : ''}
-                onClick={allFilterHandler}/>
-            <Button
-                title="Active"
-                className={props.filter === 'active' ? 'active-btn' : ''}
-                onClick={activeFilterHandler}/>
-            <Button
-                title="Completed"
-                className={props.filter === 'completed' ? 'active-btn' : ''}
-                onClick={completedFilterHandler}/>
+            <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                <Button variant={props.filter === 'all' ? 'outlined' : 'text'} onClick={allFilterHandler}
+                        size={'small'}>
+                    All
+                </Button>
+                <Button variant={props.filter === 'active' ? 'outlined' : 'text'} onClick={activeFilterHandler}
+                        size={'small'}>
+                    Active
+                </Button>
+                <Button variant={props.filter === 'completed' ? 'outlined' : 'text'} onClick={completedFilterHandler}
+                        size={'small'}>
+                    Completed
+                </Button>
+            </Box>
         </div>
     )
 }

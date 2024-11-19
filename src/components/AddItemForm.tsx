@@ -1,5 +1,7 @@
-import {Button} from './Button';
 import {ChangeEvent, KeyboardEvent, useState} from 'react';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
 
 type AddItemFormType = {
     addItem: (title: string) => void
@@ -8,14 +10,13 @@ type AddItemFormType = {
 export const AddItemForm = ({addItem}: AddItemFormType) => {
     const [itemTitle, setItemTitle] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    let isTitleLengthValid = itemTitle.length < 15;
 
     const changeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setErrorMessage(null);
         setItemTitle(e.currentTarget.value);
     }
     const keyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        return isTitleLengthValid && e.key === 'Enter' && addItemHandler();
+        return e.key === 'Enter' && addItemHandler();
     }
     const addItemHandler = () => {
         itemTitle.trim() !== ''
@@ -26,11 +27,21 @@ export const AddItemForm = ({addItem}: AddItemFormType) => {
 
     return (
         <>
-            <input className={errorMessage ? 'error' : ''} type="text" placeholder="Max 15 characters" value={itemTitle}
-                   onChange={changeInputHandler} onKeyUp={keyUpHandler}/>
-            <Button title="+" onClick={addItemHandler} disabled={!isTitleLengthValid}/>
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
-            {!isTitleLengthValid && <div className="error-message">Max 15 characters</div>}
+            <TextField
+                value={itemTitle}
+                variant={'outlined'}
+                label={'Enter a title'}
+                onChange={changeInputHandler}
+                onKeyUp={keyUpHandler}
+                error={!!errorMessage}
+                helperText={errorMessage}
+                size={'small'}
+            />
+            <IconButton onClick={addItemHandler}>
+                <AddBoxOutlinedIcon/>
+            </IconButton>
+            {/*{errorMessage && <div className="error-message">{errorMessage}</div>}*/}
+            {/*{!isTitleLengthValid && <div className="error-message">Max 15 characters</div>}*/}
         </>
     );
 };
