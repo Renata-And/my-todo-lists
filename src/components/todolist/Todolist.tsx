@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import { FilterValueType } from '../../App';
+import { FilterValuesType } from '../../App';
 import { AddItemForm } from '../AddItemForm';
 import { EditableSpan } from '../EditableSpan';
 import IconButton from '@mui/material/IconButton/IconButton';
@@ -19,40 +19,40 @@ export type TaskType = {
 }
 
 type TodolistType = {
-  todoListId: string
+  todolistId: string
   title: string
   tasks: TaskType[]
-  deleteTask: (preload: { id: string, todoListId: string }) => void
-  addTask: (preload: { taskTitle: string, todoListId: string }) => void
-  setTaskNewStatus: (preload: { taskId: string, newStatus: boolean, todoListId: string }) => void
-  updateTask: (preload: { taskId: string, title: string, todoListId: string }) => void
-  changeFilter: (preload: { filter: FilterValueType; todoListId: string }) => void
+  deleteTask: (payload: { id: string, todolistId: string }) => void
+  addTask: (payload: { taskTitle: string, todolistId: string }) => void
+  changeTaskStatus: (payload: { taskId: string, isDone: boolean, todolistId: string }) => void
+  updateTaskTitle: (payload: { taskId: string, title: string, todolistId: string }) => void
+  changeFilter: (payload: { filter: FilterValuesType; todolistId: string }) => void
   deleteTodoList: (id: string) => void
-  updateTodoListTitle: (preload: { todoListId: string, title: string }) => void
-  filter: FilterValueType
+  updateTodoListTitle: (payload: { todolistId: string, title: string }) => void
+  filter: FilterValuesType
 }
 
 export function Todolist(props: TodolistType) {
-  const allFilterHandler = () => props.changeFilter({ filter: 'all', todoListId: props.todoListId });
-  const activeFilterHandler = () => props.changeFilter({ filter: 'active', todoListId: props.todoListId });
-  const completedFilterHandler = () => props.changeFilter({ filter: 'completed', todoListId: props.todoListId });
-  const updateTitle = (title: string) => props.updateTodoListTitle({ todoListId: props.todoListId, title })
+  const allFilterHandler = () => props.changeFilter({ filter: 'all', todolistId: props.todolistId });
+  const activeFilterHandler = () => props.changeFilter({ filter: 'active', todolistId: props.todolistId });
+  const completedFilterHandler = () => props.changeFilter({ filter: 'completed', todolistId: props.todolistId });
+  const updateTitle = (title: string) => props.updateTodoListTitle({ todolistId: props.todolistId, title })
 
-  const deleteTodoListHandler = () => props.deleteTodoList(props.todoListId)
-  const addTaskCallback = (title: string) => props.addTask({ taskTitle: title, todoListId: props.todoListId })
+  const deleteTodoListHandler = () => props.deleteTodoList(props.todolistId)
+  const addTaskCallback = (title: string) => props.addTask({ taskTitle: title, todolistId: props.todolistId })
 
   const tasksList = props.tasks.length === 0
     ? <p>Tasks list is empty</p>
     : <List>
       {props.tasks.map(task => {
-        const deleteTaskHandler = () => props.deleteTask({ id: task.id, todoListId: props.todoListId });
-        const taskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => props.setTaskNewStatus({
+        const deleteTaskHandler = () => props.deleteTask({ id: task.id, todolistId: props.todolistId });
+        const taskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => props.changeTaskStatus({
           taskId: task.id,
-          newStatus: e.currentTarget.checked,
-          todoListId: props.todoListId
+          isDone: e.currentTarget.checked,
+          todolistId: props.todolistId
         });
         const updateTaskCallback = (title: string) => {
-          props.updateTask({ taskId: task.id, todoListId: props.todoListId, title })
+          props.updateTaskTitle({ taskId: task.id, todolistId: props.todolistId, title })
         }
         return (
           <ListItem

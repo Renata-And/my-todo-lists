@@ -31,7 +31,7 @@ const defaultTasks: TasksType = {
   ]
 }
 
-const defaultTodoLists: TodoListsType[] = [
+const defaultTodolists: TodolistType[] = [
   {
     id: todolist1_id,
     title: 'What to buy',
@@ -44,65 +44,65 @@ const defaultTodoLists: TodoListsType[] = [
   }
 ]
 
-type TodoListsType = {
+export type TodolistType = {
   id: string
   title: string
-  filter: FilterValueType
+  filter: FilterValuesType
 }
 
-type TasksType = {
+export type TasksType = {
   [key: string]: TaskType[]
 }
 
 type ThemeMode = 'dark' | 'light'
 
-export type FilterValueType = 'all' | 'active' | 'completed'
+export type FilterValuesType = 'all' | 'active' | 'completed'
 
 function App() {
-  const [todoLists, setTodoLists] = useState<TodoListsType[]>(defaultTodoLists)
+  const [todolists, setTodolists] = useState<TodolistType[]>(defaultTodolists)
   const [tasks, setTasks] = useState<TasksType>(defaultTasks)
 
   //Tasks
-  const deleteTask = (preload: { id: string, todoListId: string }) => {
-    const { id, todoListId } = preload;
-    const newTasksState = tasks[todoListId].filter(task => task.id !== id);
-    setTasks({ ...tasks, [todoListId]: newTasksState });
+  const deleteTask = (payload: { id: string, todolistId: string }) => {
+    const { id, todolistId } = payload;
+    const newTasksState = tasks[todolistId].filter(task => task.id !== id);
+    setTasks({ ...tasks, [todolistId]: newTasksState });
   }
-  const addTask = (preload: { taskTitle: string, todoListId: string }) => {
-    const { taskTitle, todoListId } = preload;
+  const addTask = (payload: { taskTitle: string, todolistId: string }) => {
+    const { taskTitle, todolistId } = payload;
     const newTask = { id: v1(), title: taskTitle, isDone: false };
-    setTasks({ ...tasks, [todoListId]: [newTask, ...tasks[todoListId]] });
+    setTasks({ ...tasks, [todolistId]: [newTask, ...tasks[todolistId]] });
   }
-  const setTaskNewStatus = (preload: { taskId: string, newStatus: boolean, todoListId: string }) => {
-    const { newStatus, taskId, todoListId } = preload;
-    const newTasksState: TaskType[] = tasks[todoListId].map(task => task.id === taskId ? {
+  const changeTaskStatus = (payload: { taskId: string, isDone: boolean, todolistId: string }) => {
+    const { isDone, taskId, todolistId } = payload;
+    const newTasksState: TaskType[] = tasks[todolistId].map(task => task.id === taskId ? {
       ...task,
-      isDone: newStatus
+      isDone
     } : task);
-    setTasks({ ...tasks, [todoListId]: newTasksState });
+    setTasks({ ...tasks, [todolistId]: newTasksState });
   }
-  const updateTask = (preload: { taskId: string, title: string, todoListId: string }) => {
-    const { taskId, todoListId, title } = preload;
-    setTasks({ ...tasks, [todoListId]: tasks[todoListId].map(t => t.id === taskId ? { ...t, title } : t) })
+  const updateTaskTitle = (payload: { taskId: string, title: string, todolistId: string }) => {
+    const { taskId, todolistId, title } = payload;
+    setTasks({ ...tasks, [todolistId]: tasks[todolistId].map(t => t.id === taskId ? { ...t, title } : t) })
   }
 
   // TodoLists
-  const changeFilter = (preload: { filter: FilterValueType, todoListId: string }) => {
-    const { filter, todoListId } = preload;
-    setTodoLists(todoLists.map(tl => tl.id === todoListId ? { ...tl, filter } : tl))
+  const deleteTodoList = (todolistId: string) => {
+    setTodolists(todolists.filter(tl => tl.id !== todolistId))
+    delete tasks[todolistId]
   }
-  const deleteTodoList = (id: string) => {
-    setTodoLists(todoLists.filter(tl => tl.id !== id))
-    delete tasks[id]
+  const addTodoList = (todolistTitle: string) => {
+    const newTodolistId = v1();
+    setTodolists([{ id: newTodolistId, title: todolistTitle, filter: 'all' }, ...todolists])
+    setTasks({ ...tasks, [newTodolistId]: [] })
   }
-  const addTodoList = (todoListTitle: string) => {
-    const newTodoListId = v1();
-    setTodoLists([{ id: newTodoListId, title: todoListTitle, filter: 'all' }, ...todoLists])
-    setTasks({ ...tasks, [newTodoListId]: [] })
+  const updateTodoListTitle = (payload: { todolistId: string, title: string }) => {
+    const { todolistId, title } = payload;
+    setTodolists(todolists.map(tl => tl.id === todolistId ? { ...tl, title } : tl))
   }
-  const updateTodoListTitle = (preload: { todoListId: string, title: string }) => {
-    const { todoListId, title } = preload
-    setTodoLists(todoLists.map(tl => tl.id === todoListId ? { ...tl, title } : tl))
+  const changeTodolistFilter = (payload: { filter: FilterValuesType, todolistId: string }) => {
+    const { filter, todolistId } = payload;
+    setTodolists(todolists.map(tl => tl.id === todolistId ? { ...tl, filter } : tl))
   }
 
   // Theme
@@ -142,7 +142,7 @@ function App() {
           <AddItemForm addItem={addTodoList} />
         </Grid>
         <Grid container spacing={3}>
-          {todoLists.map(tl => {
+          {todolists.map(tl => {
             let filteredTasks = tasks[tl.id];
             switch (tl.filter) {
               case 'active':
@@ -157,14 +157,14 @@ function App() {
                 <Paper sx={{ p: '0 15px 15px 15px' }}>
                   <Todolist
                     key={tl.id}
-                    todoListId={tl.id}
+                    todolistId={tl.id}
                     title={tl.title}
                     tasks={filteredTasks}
                     deleteTask={deleteTask}
                     addTask={addTask}
-                    setTaskNewStatus={setTaskNewStatus}
-                    updateTask={updateTask}
-                    changeFilter={changeFilter}
+                    changeTaskStatus={changeTaskStatus}
+                    updateTaskTitle={updateTaskTitle}
+                    changeFilter={changeTodolistFilter}
                     deleteTodoList={deleteTodoList}
                     updateTodoListTitle={updateTodoListTitle}
                     filter={tl.filter}
