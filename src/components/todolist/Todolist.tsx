@@ -25,18 +25,18 @@ type TodolistType = {
   deleteTask: (payload: { id: string, todolistId: string }) => void
   addTask: (payload: { taskTitle: string, todolistId: string }) => void
   changeTaskStatus: (payload: { taskId: string, isDone: boolean, todolistId: string }) => void
-  updateTaskTitle: (payload: { taskId: string, title: string, todolistId: string }) => void
-  changeFilter: (payload: { filter: FilterValuesType; todolistId: string }) => void
+  changeTaskTitle: (payload: { taskId: string, title: string, todolistId: string }) => void
+  changeTodolistFilter: (payload: { filter: FilterValuesType; id: string }) => void
   deleteTodoList: (id: string) => void
-  updateTodoListTitle: (payload: { todolistId: string, title: string }) => void
+  changeTodoListTitle: (payload: { id: string, title: string }) => void
   filter: FilterValuesType
 }
 
 export function Todolist(props: TodolistType) {
-  const allFilterHandler = () => props.changeFilter({ filter: 'all', todolistId: props.todolistId });
-  const activeFilterHandler = () => props.changeFilter({ filter: 'active', todolistId: props.todolistId });
-  const completedFilterHandler = () => props.changeFilter({ filter: 'completed', todolistId: props.todolistId });
-  const updateTitle = (title: string) => props.updateTodoListTitle({ todolistId: props.todolistId, title })
+  const allFilterHandler = () => props.changeTodolistFilter({ filter: 'all', id: props.todolistId });
+  const activeFilterHandler = () => props.changeTodolistFilter({ filter: 'active', id: props.todolistId });
+  const completedFilterHandler = () => props.changeTodolistFilter({ filter: 'completed', id: props.todolistId });
+  const updateTitle = (title: string) => props.changeTodoListTitle({ id: props.todolistId, title })
 
   const deleteTodoListHandler = () => props.deleteTodoList(props.todolistId)
   const addTaskCallback = (title: string) => props.addTask({ taskTitle: title, todolistId: props.todolistId })
@@ -52,7 +52,7 @@ export function Todolist(props: TodolistType) {
           todolistId: props.todolistId
         });
         const updateTaskCallback = (title: string) => {
-          props.updateTaskTitle({ taskId: task.id, todolistId: props.todolistId, title })
+          props.changeTaskTitle({ taskId: task.id, todolistId: props.todolistId, title })
         }
         return (
           <ListItem
