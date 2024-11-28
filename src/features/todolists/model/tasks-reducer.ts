@@ -1,6 +1,15 @@
 import { v1 } from 'uuid';
-import { TasksType } from '../App'
 import { AddTodolistActionType, DeleteTodolistActionType } from './todolists-reducer';
+
+export type TaskType = {
+  id: string
+  title: string
+  isDone: boolean
+}
+
+export type TasksType = {
+  [key: string]: TaskType[]
+}
 
 const initialState: TasksType = {}
 
