@@ -1,40 +1,50 @@
-import ListItem from "@mui/material/ListItem/ListItem"
-import { getListItemSx } from "./Task.styles"
-import Checkbox from "@mui/material/Checkbox/Checkbox"
-import { EditableSpan } from "common/components"
-import IconButton from "@mui/material/IconButton/IconButton"
-import DeleteIcon from "@mui/icons-material/Delete"
-import { ChangeEvent } from "react"
-import { changeTaskStatusAC, changeTaskTitleAC, deleteTaskAC, type TaskType } from "../../../../../model/tasks-reducer"
-import type { TodolistType } from "../../../../../model/todolists-reducer"
-import { useAppDispatch } from "common/hooks/useAppDispatch"
+import ListItem from '@mui/material/ListItem/ListItem'
+import { getListItemSx } from './Task.styles'
+import Checkbox from '@mui/material/Checkbox/Checkbox'
+import { EditableSpan } from 'common/components'
+import IconButton from '@mui/material/IconButton/IconButton'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { ChangeEvent } from 'react'
+import { deleteTaskTC, updateTaskTC } from '../../../../../model/tasks-reducer'
+import { useAppDispatch } from 'common/hooks/useAppDispatch'
+import type { DomainTodolist } from '../../../../../api/todolistsApi.types'
+import { TaskStatus } from 'common/enums'
+import type { DomainTask, UpdateTaskDomainModel } from '../../../../../api/tasksApi.types'
 
 type Props = {
-  todolist: TodolistType
-  task: TaskType
+  todolist: DomainTodolist
+  task: DomainTask
 }
 
 export const Task = ({ todolist, task }: Props) => {
   const dispatch = useAppDispatch()
 
-  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(changeTaskStatusAC({ isDone: e.currentTarget.checked, taskId: task.id, todolistId: todolist.id }))
-  }
   const deleteTask = () => {
-    dispatch(deleteTaskAC({ id: task.id, todolistId: todolist.id }))
+    dispatch(deleteTaskTC({ taskId: task.id, todolistId: todolist.id }))
   }
+
+  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
+    const model: UpdateTaskDomainModel = {
+      status: e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New,
+    }
+    dispatch(updateTaskTC({ task, model }))
+  }
+
   const changeTaskTitle = (title: string) => {
-    dispatch(changeTaskTitleAC({ taskId: task.id, title, todolistId: todolist.id }))
+    const model: UpdateTaskDomainModel = {
+      title,
+    }
+    dispatch(updateTaskTC({ task, model }))
   }
 
   return (
-    <ListItem key={task.id} sx={getListItemSx(task.isDone)}>
+    <ListItem key={task.id} sx={getListItemSx(task.status === TaskStatus.Completed)}>
       <div>
-        <Checkbox checked={task.isDone} onChange={changeTaskStatus} size={"small"} />
+        <Checkbox checked={task.status === TaskStatus.Completed} onChange={changeTaskStatus} size={'small'} />
         <EditableSpan value={task.title} onChange={changeTaskTitle} />
       </div>
-      <IconButton onClick={deleteTask} size={"small"}>
-        <DeleteIcon fontSize={"inherit"} />
+      <IconButton onClick={deleteTask} size={'small'}>
+        <DeleteIcon fontSize={'inherit'} />
       </IconButton>
     </ListItem>
   )

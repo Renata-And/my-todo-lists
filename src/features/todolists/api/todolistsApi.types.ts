@@ -1,8 +1,14 @@
+import type { FilterValuesType } from '../model/todolists-reducer'
+
 export type Todolist = {
   id: string
   title: string
   addedDate: string
   order: number
+}
+
+export type DomainTodolist = Todolist & {
+  filter: FilterValuesType
 }
 
 export type FieldError = {

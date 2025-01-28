@@ -1,7 +1,6 @@
-import type { DomainTask, GetTasksResponse, UpdateTaskModel } from "./tasksApi.types"
-import { instance } from "common/instance"
-import type { BaseResponse } from "./todolistsApi.types"
-import { ChangeEvent } from "react"
+import type { DomainTask, GetTasksResponse, UpdateTaskModel } from './tasksApi.types'
+import { instance } from 'common/instance'
+import type { BaseResponse } from './todolistsApi.types'
 
 export const tasksApi = {
   getTasks(payload: { todolistId: string }) {
@@ -12,17 +11,10 @@ export const tasksApi = {
       title: payload.title,
     })
   },
-  removeTask(payload: { taskId: string; todolistId: string }) {
+  deleteTask(payload: { taskId: string; todolistId: string }) {
     return instance.delete<BaseResponse>(`todo-lists/${payload.todolistId}/tasks/${payload.taskId}`)
   },
-  changeTaskStatus(payload: { e: ChangeEvent<HTMLInputElement>; task: DomainTask; model: UpdateTaskModel }) {
-    return instance.put<
-      BaseResponse<{
-        item: DomainTask
-      }>
-    >(`todo-lists/${payload.task.todoListId}/tasks/${payload.task.id}`, payload.model)
-  },
-  changeTaskTitle(payload: { title: string; task: DomainTask; model: UpdateTaskModel }) {
+  updateTask(payload: { task: DomainTask; model: UpdateTaskModel }) {
     return instance.put<
       BaseResponse<{
         item: DomainTask
