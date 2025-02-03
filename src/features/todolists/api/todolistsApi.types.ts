@@ -1,4 +1,5 @@
 import type { FilterValuesType } from '../model/todolists-reducer'
+import type { RequestStatus } from '../../../app/app-reducer'
 
 export type Todolist = {
   id: string
@@ -9,6 +10,7 @@ export type Todolist = {
 
 export type DomainTodolist = Todolist & {
   filter: FilterValuesType
+  status: RequestStatus
 }
 
 export type FieldError = {

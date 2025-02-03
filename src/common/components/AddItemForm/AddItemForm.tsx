@@ -1,14 +1,15 @@
-import { ChangeEvent, KeyboardEvent, useState } from "react"
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined"
-import IconButton from "@mui/material/IconButton"
-import TextField from "@mui/material/TextField"
+import { ChangeEvent, KeyboardEvent, useState } from 'react'
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
+import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
 
 type Props = {
   addItem: (title: string) => void
+  disabled?: boolean
 }
 
-export const AddItemForm = ({ addItem }: Props) => {
-  const [itemTitle, setItemTitle] = useState("")
+export const AddItemForm = ({ addItem, disabled }: Props) => {
+  const [itemTitle, setItemTitle] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const changeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -16,26 +17,27 @@ export const AddItemForm = ({ addItem }: Props) => {
     setItemTitle(e.currentTarget.value)
   }
   const keyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    return e.key === "Enter" && addItemHandler()
+    return e.key === 'Enter' && addItemHandler()
   }
   const addItemHandler = () => {
-    itemTitle.trim() !== "" ? addItem(itemTitle.trim()) : setErrorMessage("Title is required")
-    setItemTitle("")
+    itemTitle.trim() !== '' ? addItem(itemTitle.trim()) : setErrorMessage('Title is required')
+    setItemTitle('')
   }
 
   return (
     <>
       <TextField
         value={itemTitle}
-        variant={"outlined"}
-        label={"Enter a title"}
+        variant={'outlined'}
+        label={'Enter a title'}
         onChange={changeInputHandler}
         onKeyUp={keyUpHandler}
         error={!!errorMessage}
         helperText={errorMessage}
-        size={"small"}
+        size={'small'}
+        disabled={disabled}
       />
-      <IconButton onClick={addItemHandler}>
+      <IconButton onClick={addItemHandler} disabled={disabled}>
         <AddBoxOutlinedIcon />
       </IconButton>
     </>

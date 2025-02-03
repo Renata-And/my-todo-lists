@@ -25,9 +25,13 @@ export const TodolistTitle = ({ todolist }: Props) => {
   return (
     <Box sx={titleContainer}>
       <Typography variant={'h5'} component={'h2'} sx={todolistTitle}>
-        <EditableSpan value={todolist.title} onChange={changeTodoListTitleHandler} />
+        <EditableSpan
+          value={todolist.title}
+          onChange={changeTodoListTitleHandler}
+          disabled={todolist.status === 'loading'}
+        />
       </Typography>
-      <IconButton onClick={deleteTodoListHandler} size={'small'}>
+      <IconButton onClick={deleteTodoListHandler} size={'small'} disabled={todolist.status === 'loading'}>
         <DeleteIcon />
       </IconButton>
     </Box>

@@ -40,10 +40,15 @@ export const Task = ({ todolist, task }: Props) => {
   return (
     <ListItem key={task.id} sx={getListItemSx(task.status === TaskStatus.Completed)}>
       <div>
-        <Checkbox checked={task.status === TaskStatus.Completed} onChange={changeTaskStatus} size={'small'} />
-        <EditableSpan value={task.title} onChange={changeTaskTitle} />
+        <Checkbox
+          checked={task.status === TaskStatus.Completed}
+          onChange={changeTaskStatus}
+          size={'small'}
+          disabled={todolist.status === 'loading'}
+        />
+        <EditableSpan value={task.title} onChange={changeTaskTitle} disabled={todolist.status === 'loading'} />
       </div>
-      <IconButton onClick={deleteTask} size={'small'}>
+      <IconButton onClick={deleteTask} size={'small'} disabled={todolist.status === 'loading'}>
         <DeleteIcon fontSize={'inherit'} />
       </IconButton>
     </ListItem>
