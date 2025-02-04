@@ -1,8 +1,8 @@
-import { AddTodolistActionType, DeleteTodolistActionType } from './todolists-reducer'
+import { AddTodolistActionType, type ClearTodolistsDataActionType, DeleteTodolistActionType } from './todolists-reducer'
 import type { Dispatch } from 'redux'
 import { tasksApi } from '../api/tasksApi'
 import type { DomainTask, UpdateTaskDomainModel, UpdateTaskModel } from '../api/tasksApi.types'
-import { setAppErrorAC, setAppStatusAC } from '../../../app/app-reducer'
+import { setAppStatusAC } from '../../../app/app-reducer'
 import { ResultCode } from 'common/enums'
 import { handleServerAppError, handleServerNetworkError } from 'common/utils'
 
@@ -43,6 +43,8 @@ export const tasksReducer = (state: TasksType = initialState, action: ActionsTyp
       delete newState[id]
       return newState
     }
+    case 'CLEAR_DATA':
+      return {}
     default:
       return state
   }
@@ -149,3 +151,4 @@ type ActionsType =
   | DeleteTodolistActionType
   | SetTasksActionType
   | UpdateTaskActionType
+  | ClearTodolistsDataActionType
