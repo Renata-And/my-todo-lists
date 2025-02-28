@@ -1,15 +1,16 @@
-import ListItem from '@mui/material/ListItem/ListItem'
-import { getListItemSx } from './Task.styles'
-import Checkbox from '@mui/material/Checkbox/Checkbox'
-import { EditableSpan } from 'common/components'
-import IconButton from '@mui/material/IconButton/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { ChangeEvent } from 'react'
-import { deleteTaskTC, updateTaskTC } from '../../../../../model/tasksSlice'
-import { useAppDispatch } from 'common/hooks/useAppDispatch'
-import type { DomainTodolist } from '../../../../../api/todolistsApi.types'
+import Checkbox from '@mui/material/Checkbox/Checkbox'
+import IconButton from '@mui/material/IconButton/IconButton'
+import ListItem from '@mui/material/ListItem/ListItem'
+import { EditableSpan } from 'common/components'
 import { TaskStatus } from 'common/enums'
-import type { DomainTask, UpdateTaskDomainModel } from '../../../../../api/tasksApi.types'
+import { useAppDispatch } from 'common/hooks/useAppDispatch'
+import { useDeleteTaskMutation, useUpdateTaskMutation } from 'features/todolists/api/tasksApi'
+import { ChangeEvent } from 'react'
+import type { DomainTask, UpdateTaskDomainModel, UpdateTaskModel } from '../../../../../api/tasksApi.types'
+import type { DomainTodolist } from '../../../../../api/todolistsApi.types'
+import { updateTaskTC } from '../../../../../model/tasksSlice'
+import { getListItemSx } from './Task.styles'
 
 type Props = {
   todolist: DomainTodolist
@@ -18,23 +19,32 @@ type Props = {
 
 export const Task = ({ todolist, task }: Props) => {
   const dispatch = useAppDispatch()
+  const [deleteTask] = useDeleteTaskMutation()
+  const [updateTask] = useUpdateTaskMutation()
 
-  const deleteTask = () => {
-    dispatch(deleteTaskTC({ taskId: task.id, todolistId: todolist.id }))
+  const deleteTaskHandler = () => {
+    deleteTask({ taskId: task.id, todolistId: todolist.id })
   }
 
+  const createUpdateModel = (updates: Partial<UpdateTaskModel>): UpdateTaskModel => ({
+    status: task.status,
+    title: task.title,
+    startDate: task.startDate,
+    priority: task.priority,
+    description: task.description,
+    deadline: task.deadline,
+    ...updates,
+  })
+
   const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-    const model: UpdateTaskDomainModel = {
-      status: e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New,
-    }
-    dispatch(updateTaskTC({ task, model }))
+    updateTask({
+      task,
+      model: createUpdateModel({ status: e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New }),
+    })
   }
 
   const changeTaskTitle = (title: string) => {
-    const model: UpdateTaskDomainModel = {
-      title,
-    }
-    dispatch(updateTaskTC({ task, model }))
+    updateTask({ task, model: createUpdateModel({ title }) })
   }
 
   return (
@@ -48,7 +58,7 @@ export const Task = ({ todolist, task }: Props) => {
         />
         <EditableSpan value={task.title} onChange={changeTaskTitle} disabled={todolist.status === 'loading'} />
       </div>
-      <IconButton onClick={deleteTask} size={'small'} disabled={todolist.status === 'loading'}>
+      <IconButton onClick={deleteTaskHandler} size={'small'} disabled={todolist.status === 'loading'}>
         <DeleteIcon fontSize={'inherit'} />
       </IconButton>
     </ListItem>

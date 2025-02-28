@@ -4,19 +4,20 @@ import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormGroup from '@mui/material/FormGroup'
 import FormLabel from '@mui/material/FormLabel'
-import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid2'
+import TextField from '@mui/material/TextField'
+import { ResultCode } from 'common/enums'
 import { useAppDispatch, useAppSelector } from 'common/hooks'
-import { getTheme } from 'common/theme'
-import { Controller, type SubmitHandler, useForm } from 'react-hook-form'
-import s from './login.module.css'
-import { loginTC, selectIsLoggedIn } from '../../model/authSlice'
-import { useNavigate } from 'react-router'
-import { useEffect } from 'react'
 import { PATH } from 'common/routing/Routing'
-import { selectThemeMode } from '../../../../app/appSlice'
+import { getTheme } from 'common/theme'
+import { useLoginMutation } from 'features/auth/api/authApi'
+import { useEffect } from 'react'
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router'
+import { selectIsLoggedIn, selectThemeMode, setIsLoggedIn } from '../../../../app/appSlice'
+import s from './login.module.css'
 
-type Inputs = {
+type LoginArgs = {
   email: string
   password: string
   rememberMe: boolean
@@ -28,6 +29,7 @@ export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
   const theme = getTheme(themeMode)
   const navigate = useNavigate()
+  const [login] = useLoginMutation()
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -41,13 +43,21 @@ export const Login = () => {
     reset,
     control,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<LoginArgs>({
     defaultValues: { email: '', password: '', rememberMe: false },
   })
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    dispatch(loginTC(data))
-    reset()
+  const onSubmit: SubmitHandler<LoginArgs> = (data) => {
+    login(data)
+      .then((res) => {
+        if (res.data?.resultCode === ResultCode.Success) {
+          dispatch(setIsLoggedIn({ isLoggedIn: true }))
+          localStorage.setItem('token', res.data.data.token)
+        }
+      })
+      .finally(() => {
+        reset()
+      })
   }
 
   return (

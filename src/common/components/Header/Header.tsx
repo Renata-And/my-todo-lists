@@ -1,15 +1,18 @@
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
+import AppBar from '@mui/material/AppBar'
+import IconButton from '@mui/material/IconButton'
 import LinearProgress from '@mui/material/LinearProgress'
-import { MenuButton } from 'common/components'
 import Switch from '@mui/material/Switch'
-import { changeTheme, selectAppStatus, selectThemeMode } from '../../../app/appSlice'
+import Toolbar from '@mui/material/Toolbar'
+import { MenuButton } from 'common/components'
+import { ResultCode } from 'common/enums'
 import { useAppDispatch, useAppSelector } from 'common/hooks'
-import { logoutTC, selectIsLoggedIn } from '../../../features/auth/model/authSlice'
-import { useNavigate } from 'react-router'
 import { PATH } from 'common/routing/Routing'
+import { useLogoutMutation } from 'features/auth/api/authApi'
+import { clearTasksData } from 'features/todolists/model/tasksSlice'
+import { clearTodolistsData } from 'features/todolists/model/todolistsSlice'
+import { useNavigate } from 'react-router'
+import { changeTheme, selectAppStatus, selectIsLoggedIn, selectThemeMode, setIsLoggedIn } from '../../../app/appSlice'
 
 export const Header = () => {
   const dispatch = useAppDispatch()
@@ -17,13 +20,21 @@ export const Header = () => {
   const status = useAppSelector(selectAppStatus)
   const isLoggedIn = useAppSelector(selectIsLoggedIn)
   const navigate = useNavigate()
+  const [logout] = useLogoutMutation()
 
   const changeModeHandler = () => {
     dispatch(changeTheme({ theme: themeMode === 'light' ? 'dark' : 'light' }))
   }
 
   const logoutHandler = () => {
-    dispatch(logoutTC())
+    logout().then((res) => {
+      if (res.data?.resultCode === ResultCode.Success) {
+        dispatch(setIsLoggedIn({ isLoggedIn: false }))
+        localStorage.removeItem('token')
+        dispatch(clearTodolistsData())
+        dispatch(clearTasksData())
+      }
+    })
   }
 
   const faqHandler = () => {

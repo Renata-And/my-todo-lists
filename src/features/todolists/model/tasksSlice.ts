@@ -1,6 +1,6 @@
 import { addTodolist, deleteTodolist } from './todolistsSlice'
 import type { Dispatch } from 'redux'
-import { tasksApi } from '../api/tasksApi'
+import { _tasksApi } from '../api/tasksApi'
 import type { DomainTask, UpdateTaskDomainModel, UpdateTaskModel } from '../api/tasksApi.types'
 import { setAppStatus } from '../../../app/appSlice'
 import { ResultCode } from 'common/enums'
@@ -60,7 +60,7 @@ export const { selectTasks } = tasksSlice.selectors
 export const fetchTasksTC = (payload: { todolistId: string }) => (dispatch: Dispatch) => {
   const { todolistId } = payload
   dispatch(setAppStatus({ status: 'loading' }))
-  tasksApi
+  _tasksApi
     .getTasks({ todolistId })
     .then((res) => {
       const tasks = res.data.items
@@ -74,7 +74,7 @@ export const fetchTasksTC = (payload: { todolistId: string }) => (dispatch: Disp
 export const deleteTaskTC = (payload: { taskId: string; todolistId: string }) => (dispatch: Dispatch) => {
   const { taskId, todolistId } = payload
   dispatch(setAppStatus({ status: 'loading' }))
-  tasksApi
+  _tasksApi
     .deleteTask({ taskId, todolistId })
     .then((res) => {
       if (res.data.resultCode === ResultCode.Success) {
@@ -91,7 +91,7 @@ export const deleteTaskTC = (payload: { taskId: string; todolistId: string }) =>
 export const addTaskTC = (payload: { title: string; todolistId: string }) => (dispatch: Dispatch) => {
   const { title, todolistId } = payload
   dispatch(setAppStatus({ status: 'loading' }))
-  tasksApi
+  _tasksApi
     .createTask({ title, todolistId })
     .then((res) => {
       if (res.data.resultCode === ResultCode.Success) {
@@ -115,7 +115,7 @@ export const updateTaskTC = (payload: { task: DomainTask; model: UpdateTaskDomai
     deadline: payload.task.deadline,
   }
   dispatch(setAppStatus({ status: 'loading' }))
-  tasksApi
+  _tasksApi
     .updateTask({ task: payload.task, model })
     .then((res) => {
       if (res.data.resultCode === ResultCode.Success) {
