@@ -2,7 +2,7 @@ import { FilterTasksButtons } from './FilterTasksButtons/FilterTasksButtons'
 import { AddItemForm } from 'common/components'
 import { Tasks } from './Tasks/Tasks'
 import { TodolistTitle } from './TodolistTitle/TodolistTitle'
-import { addTaskTC } from '../../../model/tasks-reducer'
+import { addTaskTC } from '../../../model/tasksSlice'
 import { useAppDispatch } from 'common/hooks'
 import type { DomainTodolist } from '../../../api/todolistsApi.types'
 

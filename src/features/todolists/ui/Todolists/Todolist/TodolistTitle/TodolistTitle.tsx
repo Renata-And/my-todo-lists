@@ -4,22 +4,22 @@ import { EditableSpan } from 'common/components'
 import IconButton from '@mui/material/IconButton/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Box from '@mui/material/Box/Box'
-import { changeTodolistTitleTC, deleteTodolistTC } from '../../../../model/todolists-reducer'
-import { useAppDispatch } from 'common/hooks'
 import type { DomainTodolist } from '../../../../api/todolistsApi.types'
+import { useChangeTodolistTitleMutation, useDeleteTodolistMutation } from '../../../../api/todolistsApi'
 
 type Props = {
   todolist: DomainTodolist
 }
 
 export const TodolistTitle = ({ todolist }: Props) => {
-  const dispatch = useAppDispatch()
+  const [deleteTodolist] = useDeleteTodolistMutation()
+  const [changeTodolistTitle] = useChangeTodolistTitleMutation()
 
   const deleteTodoListHandler = () => {
-    dispatch(deleteTodolistTC({ id: todolist.id }))
+    deleteTodolist(todolist.id)
   }
   const changeTodoListTitleHandler = (title: string) => {
-    dispatch(changeTodolistTitleTC({ id: todolist.id, title }))
+    changeTodolistTitle({ id: todolist.id, title })
   }
 
   return (

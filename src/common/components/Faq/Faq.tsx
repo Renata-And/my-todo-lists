@@ -12,15 +12,18 @@ const faq = [
   {
     question: 'How can I create todolist?',
     answer: 'You need to enter the name of the todolist in the input field and click the plus button',
+    id: 1,
   },
   {
     question: 'How can I remove todolist?',
     answer: 'You need to click on the trash can icon.',
+    id: 2,
   },
   {
     question: 'How can I rename the todolist?',
     answer:
       'You can rename the todolist by double-clicking on it, entering a new title, and clicking anywhere in the application.',
+    id: 3,
   },
 ]
 
@@ -35,7 +38,7 @@ export const Faq = () => {
       <Grid>
         {faq.map((el) => {
           return (
-            <Accordion>
+            <Accordion key={el.id}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
                 <Typography component="span" sx={{ fontWeight: '600' }}>
                   {el.question}

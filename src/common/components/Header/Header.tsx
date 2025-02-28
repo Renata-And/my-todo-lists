@@ -5,11 +5,9 @@ import MenuIcon from '@mui/icons-material/Menu'
 import LinearProgress from '@mui/material/LinearProgress'
 import { MenuButton } from 'common/components'
 import Switch from '@mui/material/Switch'
-import { changeThemeAC } from '../../../app/app-reducer'
+import { changeTheme, selectAppStatus, selectThemeMode } from '../../../app/appSlice'
 import { useAppDispatch, useAppSelector } from 'common/hooks'
-import { selectAppStatus, selectThemeMode } from '../../../app/appSelectors'
-import { selectIsLoggedIn } from '../../../features/auth/model/authSelectors'
-import { logoutTC } from '../../../features/auth/model/auth-reducer'
+import { logoutTC, selectIsLoggedIn } from '../../../features/auth/model/authSlice'
 import { useNavigate } from 'react-router'
 import { PATH } from 'common/routing/Routing'
 
@@ -21,7 +19,7 @@ export const Header = () => {
   const navigate = useNavigate()
 
   const changeModeHandler = () => {
-    dispatch(changeThemeAC(themeMode === 'light' ? 'dark' : 'light'))
+    dispatch(changeTheme({ theme: themeMode === 'light' ? 'dark' : 'light' }))
   }
 
   const logoutHandler = () => {

@@ -7,15 +7,14 @@ import FormLabel from '@mui/material/FormLabel'
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid2'
 import { useAppDispatch, useAppSelector } from 'common/hooks'
-import { selectThemeMode } from '../../../../app/appSelectors'
 import { getTheme } from 'common/theme'
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form'
 import s from './login.module.css'
-import { setIsLoggedInTC } from '../../model/auth-reducer'
-import { selectIsLoggedIn } from '../../model/authSelectors'
+import { loginTC, selectIsLoggedIn } from '../../model/authSlice'
 import { useNavigate } from 'react-router'
 import { useEffect } from 'react'
 import { PATH } from 'common/routing/Routing'
+import { selectThemeMode } from '../../../../app/appSlice'
 
 type Inputs = {
   email: string
@@ -47,7 +46,7 @@ export const Login = () => {
   })
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    dispatch(setIsLoggedInTC(data))
+    dispatch(loginTC(data))
     reset()
   }
 

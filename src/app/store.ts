@@ -1,21 +1,22 @@
-import { applyMiddleware, combineReducers, legacy_createStore as createStore, type UnknownAction } from 'redux'
-import { tasksReducer } from '../features/todolists/model/tasks-reducer'
-import { todolistsReducer } from '../features/todolists/model/todolists-reducer'
-import { appReducer } from './app-reducer'
-import { thunk, type ThunkDispatch } from 'redux-thunk'
-import { authReducer } from '../features/auth/model/auth-reducer'
+import { tasksReducer, tasksSlice } from '../features/todolists/model/tasksSlice'
+import { todolistsReducer, todolistsSlice } from '../features/todolists/model/todolistsSlice'
+import { appReducer, appSlice } from './appSlice'
+import { authReducer, authSlice } from '../features/auth/model/authSlice'
+import { configureStore } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
+import { baseApi } from './baseApi'
 
-const rootReducer = combineReducers({
-  tasks: tasksReducer,
-  todolists: todolistsReducer,
-  app: appReducer,
-  auth: authReducer,
+export const store = configureStore({
+  reducer: {
+    [tasksSlice.name]: tasksReducer,
+    [todolistsSlice.name]: todolistsReducer,
+    [appSlice.name]: appReducer,
+    [authSlice.name]: authReducer,
+    [baseApi.reducerPath]: baseApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
 })
-
-export const store = createStore(rootReducer, {}, applyMiddleware(thunk))
 export type RootState = ReturnType<typeof store.getState>
-// export type AppDispatch = typeof store.dispatch
-export type AppDispatch = ThunkDispatch<RootState, unknown, UnknownAction>
+export type AppDispatch = typeof store.dispatch
 
-// @ts-ignore
-window.store = store
+setupListeners(store.dispatch)

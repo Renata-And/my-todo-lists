@@ -3,13 +3,12 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { getTheme } from 'common/theme/theme'
 import { ErrorSnackBar, Header } from 'common/components'
 import { useAppDispatch, useAppSelector } from 'common/hooks'
-import { selectThemeMode } from './appSelectors'
 import { Routing } from 'common/routing'
 import { useEffect } from 'react'
-import { initializeAppTC } from '../features/auth/model/auth-reducer'
-import { selectIsInitialized } from '../features/auth/model/authSelectors'
+import { initializeAppTC, selectIsInitialized } from '../features/auth/model/authSlice'
 import CircularProgress from '@mui/material/CircularProgress'
 import s from './app.module.css'
+import { selectThemeMode } from './appSlice'
 
 const App = () => {
   const dispatch = useAppDispatch()
