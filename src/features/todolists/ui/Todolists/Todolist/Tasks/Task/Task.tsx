@@ -4,12 +4,10 @@ import IconButton from '@mui/material/IconButton/IconButton'
 import ListItem from '@mui/material/ListItem/ListItem'
 import { EditableSpan } from 'common/components'
 import { TaskStatus } from 'common/enums'
-import { useAppDispatch } from 'common/hooks/useAppDispatch'
 import { useDeleteTaskMutation, useUpdateTaskMutation } from 'features/todolists/api/tasksApi'
 import { ChangeEvent } from 'react'
-import type { DomainTask, UpdateTaskDomainModel, UpdateTaskModel } from '../../../../../api/tasksApi.types'
+import type { DomainTask, UpdateTaskModel } from '../../../../../api/tasksApi.types'
 import type { DomainTodolist } from '../../../../../api/todolistsApi.types'
-import { updateTaskTC } from '../../../../../model/tasksSlice'
 import { getListItemSx } from './Task.styles'
 
 type Props = {
@@ -18,7 +16,6 @@ type Props = {
 }
 
 export const Task = ({ todolist, task }: Props) => {
-  const dispatch = useAppDispatch()
   const [deleteTask] = useDeleteTaskMutation()
   const [updateTask] = useUpdateTaskMutation()
 

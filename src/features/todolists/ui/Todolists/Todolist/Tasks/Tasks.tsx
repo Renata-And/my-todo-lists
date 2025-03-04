@@ -3,13 +3,14 @@ import { TaskStatus } from 'common/enums'
 import { useGetTasksQuery } from 'features/todolists/api/tasksApi'
 import type { DomainTodolist } from '../../../../api/todolistsApi.types'
 import { Task } from './Task/Task'
+import { TasksSkeleton } from '../../../skeletons/TasksSkeleton/TasksSkeleton'
 
 type Props = {
   todolist: DomainTodolist
 }
 
 export const Tasks = ({ todolist }: Props) => {
-  const { data: tasks } = useGetTasksQuery({ todolistId: todolist.id })
+  const { data: tasks, isLoading } = useGetTasksQuery({ todolistId: todolist.id })
 
   let filteredTasks = tasks?.items
   switch (todolist.filter) {
@@ -19,6 +20,10 @@ export const Tasks = ({ todolist }: Props) => {
     case 'completed':
       filteredTasks = filteredTasks?.filter((task) => task.status === TaskStatus.Completed)
       break
+  }
+
+  if (isLoading) {
+    return <TasksSkeleton />
   }
 
   return (

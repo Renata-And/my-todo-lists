@@ -9,10 +9,9 @@ import { ResultCode } from 'common/enums'
 import { useAppDispatch, useAppSelector } from 'common/hooks'
 import { PATH } from 'common/routing/Routing'
 import { useLogoutMutation } from 'features/auth/api/authApi'
-import { clearTasksData } from 'features/todolists/model/tasksSlice'
-import { clearTodolistsData } from 'features/todolists/model/todolistsSlice'
 import { useNavigate } from 'react-router'
 import { changeTheme, selectAppStatus, selectIsLoggedIn, selectThemeMode, setIsLoggedIn } from '../../../app/appSlice'
+import { baseApi } from '../../../app/baseApi'
 
 export const Header = () => {
   const dispatch = useAppDispatch()
@@ -27,14 +26,16 @@ export const Header = () => {
   }
 
   const logoutHandler = () => {
-    logout().then((res) => {
-      if (res.data?.resultCode === ResultCode.Success) {
-        dispatch(setIsLoggedIn({ isLoggedIn: false }))
-        localStorage.removeItem('token')
-        dispatch(clearTodolistsData())
-        dispatch(clearTasksData())
-      }
-    })
+    logout()
+      .then((res) => {
+        if (res.data?.resultCode === ResultCode.Success) {
+          dispatch(setIsLoggedIn({ isLoggedIn: false }))
+          localStorage.removeItem('token')
+        }
+      })
+      .then(() => {
+        dispatch(baseApi.util.invalidateTags(['Todolist', 'Task']))
+      })
   }
 
   const faqHandler = () => {
