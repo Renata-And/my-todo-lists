@@ -6,9 +6,8 @@ import { EditableSpan } from 'common/components'
 import { TaskStatus } from 'common/enums'
 import { useDeleteTaskMutation, useUpdateTaskMutation } from 'features/todolists/api/tasksApi'
 import { ChangeEvent } from 'react'
-import type { DomainTask, UpdateTaskModel } from '../../../../../api/tasksApi.types'
-import type { DomainTodolist } from '../../../../../api/todolistsApi.types'
 import { getListItemSx } from './Task.styles'
+import type { DomainTask, DomainTodolist, UpdateTaskModel } from '../../../../../lib/types/types'
 
 type Props = {
   todolist: DomainTodolist

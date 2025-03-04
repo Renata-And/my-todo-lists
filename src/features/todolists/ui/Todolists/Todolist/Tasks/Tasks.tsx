@@ -1,9 +1,9 @@
 import List from '@mui/material/List/List'
 import { TaskStatus } from 'common/enums'
 import { useGetTasksQuery } from 'features/todolists/api/tasksApi'
-import type { DomainTodolist } from '../../../../api/todolistsApi.types'
 import { Task } from './Task/Task'
 import { TasksSkeleton } from '../../../skeletons/TasksSkeleton/TasksSkeleton'
+import type { DomainTodolist } from '../../../../lib/types/types'
 
 type Props = {
   todolist: DomainTodolist

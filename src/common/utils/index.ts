@@ -1,2 +1,2 @@
-export { handleServerAppError } from './handleServerAppError'
-export { handleServerNetworkError } from './handleServerNetworkError'
+export { handleError } from './handleError'
+export { isErrorWithMessage } from './isErrorWithMessage'

@@ -4,10 +4,10 @@ import { EditableSpan } from 'common/components'
 import IconButton from '@mui/material/IconButton/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Box from '@mui/material/Box/Box'
-import type { DomainTodolist } from '../../../../api/todolistsApi.types'
 import { todolistsApi, useChangeTodolistTitleMutation, useDeleteTodolistMutation } from '../../../../api/todolistsApi'
 import type { RequestStatus } from '../../../../../../app/appSlice'
 import { useAppDispatch } from 'common/hooks'
+import type { DomainTodolist } from '../../../../lib/types/types'
 
 type Props = {
   todolist: DomainTodolist

@@ -1,9 +1,9 @@
 import { AddItemForm } from 'common/components'
 import { useAddTaskMutation } from 'features/todolists/api/tasksApi'
-import type { DomainTodolist } from '../../../api/todolistsApi.types'
 import { FilterTasksButtons } from './FilterTasksButtons/FilterTasksButtons'
 import { Tasks } from './Tasks/Tasks'
 import { TodolistTitle } from './TodolistTitle/TodolistTitle'
+import type { DomainTodolist } from '../../../lib/types/types'
 
 type Props = {
   todolist: DomainTodolist

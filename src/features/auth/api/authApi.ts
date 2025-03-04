@@ -1,7 +1,7 @@
 import { instance } from 'common/instance'
-import type { BaseResponse } from '../../todolists/api/todolistsApi.types'
 import type { LoginArgs } from './authApi.types'
 import { baseApi } from 'app/baseApi'
+import type { BaseResponse } from '../../todolists/lib/types/types'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({

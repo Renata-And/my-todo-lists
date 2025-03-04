@@ -1,6 +1,5 @@
-import type { DomainTask, GetTasksResponse, UpdateTaskModel } from './tasksApi.types'
-import type { BaseResponse } from './todolistsApi.types'
 import { baseApi } from 'app/baseApi'
+import type { BaseResponse, DomainTask, GetTasksResponse, UpdateTaskModel } from '../lib/types/types'
 
 export const tasksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
