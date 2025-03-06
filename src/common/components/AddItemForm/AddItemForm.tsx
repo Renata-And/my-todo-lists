@@ -5,10 +5,9 @@ import TextField from '@mui/material/TextField'
 
 type Props = {
   addItem: (title: string) => void
-  disabled?: boolean
 }
 
-export const AddItemForm = ({ addItem, disabled }: Props) => {
+export const AddItemForm = ({ addItem }: Props) => {
   const [itemTitle, setItemTitle] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -35,9 +34,8 @@ export const AddItemForm = ({ addItem, disabled }: Props) => {
         error={!!errorMessage}
         helperText={errorMessage}
         size={'small'}
-        disabled={disabled}
       />
-      <IconButton onClick={addItemHandler} disabled={disabled}>
+      <IconButton onClick={addItemHandler}>
         <AddBoxOutlinedIcon />
       </IconButton>
     </>

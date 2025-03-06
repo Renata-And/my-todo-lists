@@ -31,13 +31,39 @@ export const tasksApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, { todolistId }) => [{ type: 'Task', id: todolistId }],
     }),
-    updateTask: build.mutation<BaseResponse<{ item: DomainTask }>, { task: DomainTask; model: UpdateTaskModel }>({
-      query: ({ task, model }) => ({
-        url: `todo-lists/${task.todoListId}/tasks/${task.id}`,
+    updateTask: build.mutation<
+      BaseResponse<{ item: DomainTask }>,
+      { todolistId: string; taskId: string; model: UpdateTaskModel }
+    >({
+      query: ({ todolistId, taskId, model }) => ({
         method: 'PUT',
+        url: `todo-lists/${todolistId}/tasks/${taskId}`,
         body: model,
       }),
-      invalidatesTags: (result, error, { task }) => [{ type: 'Task', id: task.todoListId }],
+      async onQueryStarted({ todolistId, taskId, model }, { dispatch, queryFulfilled, getState }) {
+        const cachedArgsForQuery = tasksApi.util.selectCachedArgsForQuery(getState(), 'getTasks')
+        console.log({ model })
+
+        let patchResults: any[] = []
+
+        cachedArgsForQuery.forEach(({ args }) => {
+          patchResults.push(
+            dispatch(
+              tasksApi.util.updateQueryData('getTasks', { todolistId, args: { page: args.page } }, (state) => {
+                state.items = state.items.map((task) => (task.id === taskId ? { ...task, status: model.status } : task))
+              }),
+            ),
+          )
+        })
+        try {
+          await queryFulfilled
+        } catch {
+          patchResults.forEach((patchResult) => {
+            patchResult.undo()
+          })
+        }
+      },
+      invalidatesTags: (res, err, { todolistId }) => [{ type: 'Task', id: todolistId }],
     }),
   }),
 })

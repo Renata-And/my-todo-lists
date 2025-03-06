@@ -19,7 +19,7 @@ export const Todolist = ({ todolist }: Props) => {
   return (
     <>
       <TodolistTitle todolist={todolist} />
-      <AddItemForm addItem={addTaskHandler} disabled={todolist.status === 'loading'} />
+      <AddItemForm addItem={addTaskHandler} />
       <Tasks todolist={todolist} />
       <FilterTasksButtons todolist={todolist} />
     </>

@@ -34,27 +34,23 @@ export const Task = ({ todolist, task }: Props) => {
 
   const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
     updateTask({
-      task,
+      todolistId: todolist.id,
+      taskId: task.id,
       model: createUpdateModel({ status: e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New }),
     })
   }
 
   const changeTaskTitle = (title: string) => {
-    updateTask({ task, model: createUpdateModel({ title }) })
+    updateTask({ todolistId: todolist.id, taskId: task.id, model: createUpdateModel({ title }) })
   }
 
   return (
     <ListItem key={task.id} sx={getListItemSx(task.status === TaskStatus.Completed)}>
       <div>
-        <Checkbox
-          checked={task.status === TaskStatus.Completed}
-          onChange={changeTaskStatus}
-          size={'small'}
-          disabled={todolist.status === 'loading'}
-        />
-        <EditableSpan value={task.title} onChange={changeTaskTitle} disabled={todolist.status === 'loading'} />
+        <Checkbox checked={task.status === TaskStatus.Completed} onChange={changeTaskStatus} size={'small'} />
+        <EditableSpan value={task.title} onChange={changeTaskTitle} />
       </div>
-      <IconButton onClick={deleteTaskHandler} size={'small'} disabled={todolist.status === 'loading'}>
+      <IconButton onClick={deleteTaskHandler} size={'small'}>
         <DeleteIcon fontSize={'inherit'} />
       </IconButton>
     </ListItem>
