@@ -16,12 +16,8 @@ import { Controller, type SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { selectIsLoggedIn, selectThemeMode, setIsLoggedIn } from '../../../../app/appSlice'
 import s from './login.module.css'
-
-type LoginArgs = {
-  email: string
-  password: string
-  rememberMe: boolean
-}
+import { useLazyGetCaptchaUrlQuery } from '../../../security/api/securityApi'
+import type { LoginArgs } from '../../api/authApi.types'
 
 export const Login = () => {
   const dispatch = useAppDispatch()
@@ -30,6 +26,7 @@ export const Login = () => {
   const theme = getTheme(themeMode)
   const navigate = useNavigate()
   const [login] = useLoginMutation()
+  const [trigger, { data: captcha }] = useLazyGetCaptchaUrlQuery()
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -44,7 +41,7 @@ export const Login = () => {
     control,
     formState: { errors },
   } = useForm<LoginArgs>({
-    defaultValues: { email: '', password: '', rememberMe: false },
+    defaultValues: { email: '', password: '', rememberMe: false, captcha: '' },
   })
 
   const onSubmit: SubmitHandler<LoginArgs> = (data) => {
@@ -53,6 +50,8 @@ export const Login = () => {
         if (res.data?.resultCode === ResultCode.Success) {
           dispatch(setIsLoggedIn({ isLoggedIn: true }))
           localStorage.setItem('token', res.data.data.token)
+        } else if (res.data?.resultCode === 10) {
+          trigger()
         }
       })
       .finally(() => {
@@ -105,7 +104,7 @@ export const Login = () => {
                 {...register('password', {
                   required: 'Password is required',
                   minLength: {
-                    value: 3,
+                    value: 4,
                     message: 'The password must be at least 4 characters long.',
                   },
                 })}
@@ -121,6 +120,17 @@ export const Login = () => {
                   />
                 }
               />
+              {captcha?.url && <img src={captcha.url} alt={'captcha'} />}
+              {captcha?.url && (
+                <TextField
+                  label="Captcha symbols"
+                  margin="normal"
+                  {...register('captcha', {
+                    required: 'Enter the characters from the picture',
+                  })}
+                />
+              )}
+              {errors.captcha && <span className={s.errorMessage}>{errors.captcha.message}</span>}
               <Button type={'submit'} variant={'contained'} color={'secondary'}>
                 Login
               </Button>
