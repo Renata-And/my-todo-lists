@@ -6,9 +6,9 @@ import { ProtectedRoute } from 'common/components/ProtectedRoute/ProtectedRoute'
 import { Faq } from 'common/components/Faq/Faq'
 
 export const PATH = {
-  MAIN: '/',
-  LOGIN: '/login',
-  FAQ: '/faq',
+  MAIN: '/my-todo-lists',
+  LOGIN: '/my-todo-lists/login',
+  FAQ: '/my-todo-lists/faq',
   NOT_FOUND: '*',
 }
 
